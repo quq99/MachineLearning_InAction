@@ -33,7 +33,7 @@ def createDataSet():
 #splitDataSet
 
 def splitDataSet(dataSet, axis, value):
-	#axis:features; value:feature need to return
+	#axis:which features; value:feature need to return
 	retDataSet = []
 	for featVec in dataSet:
 		if featVec[axis] == value:
@@ -41,3 +41,37 @@ def splitDataSet(dataSet, axis, value):
 			reducedFeatVec.extend(featVec[axis+1:])
 			retDataSet.append(reducedFeatVec)
 	return retDataSet
+
+#choose the way to divide dataset
+def chooseBestFeatureToSplit(dataSet):
+	numFeatures = len(dataSet[0]) - 1
+	baseEntropy = calcShannonEnt(dataSet)
+	bestInfoGain = 0.0
+	bestFeature = -1
+
+	for i in range(numFeatures):
+		#all i'st feature create a list
+		featList = [example[i] for example in dataSet]
+		uniqueVals = set(featList)#no duplicate
+		
+		newEntropy = 0.0
+		for value in uniqueVals:
+			subDataSet = splitDataSet(dataSet, i, value)
+			prob = len(subDataSet)/float(len(dataSet))
+			newEntropy += prob * calcShannonEnt(subDataSet)
+
+		infoGain = baseEntropy - newEntropy
+		if(infoGain > bestInfoGain):
+			bestInfoGain = infoGain
+			bestFeature = i
+
+	return bestFeature
+
+
+#main function
+myData, labels = createDataSet()
+print myData
+a = calcShannonEnt(myData)
+print a
+b = chooseBestFeatureToSplit(myData)
+print b
