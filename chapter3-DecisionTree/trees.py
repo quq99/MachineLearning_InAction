@@ -1,5 +1,5 @@
 #caculate the entropy of the given dataset
-
+import operator
 from math import log
 
 def calcShannonEnt(dataSet):
@@ -67,6 +67,46 @@ def chooseBestFeatureToSplit(dataSet):
 
 	return bestFeature
 
+#for each feature's avalible name, return appears most frequent one
+def majorityCnt(classList):
+	classCount = {}
+	for vote in classList:
+		if vote not in classCount.keys():
+			classCount[vote] = 0
+		classCount[vote] += 1
+
+	sortedClassCount = sorted(classCount.iteritems(), \
+			key = operator.itemgetter(1), reverse = True)
+	
+	return sortedClassCount[0][0]
+
+#create the tree
+def createTree(dataSet, labels):
+	classList = [example[-1] for example in dataSet]
+
+	#if they are the same type
+	if classList.count(classList[0]) == len(classList):
+		return classList[0]
+	#if features are all used, no features left, only have label
+	if len(dataSet[0]) == 1:
+		return majorityCnt(classList)
+	
+	#divide tree
+	bestFeat = chooseBestFeatureToSplit(dataSet)
+	bestFeatLabel = labels[bestFeat]#see createDataSet function
+	myTree = {bestFeatLabel: {}}
+
+	del(labels[bestFeat])
+
+	featValues = [example[bestFeat] for example in dataSet]
+	uniqueVals = set(featValues)
+
+	for value in uniqueVals:
+		subLabels = labels[:]
+		myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet,\
+			bestFeat, value), subLabels)
+
+	return myTree
 
 #main function
 myData, labels = createDataSet()
@@ -75,3 +115,6 @@ a = calcShannonEnt(myData)
 print a
 b = chooseBestFeatureToSplit(myData)
 print b
+
+mytree = createTree(myData, labels)
+print mytree
