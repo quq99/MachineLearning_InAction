@@ -110,11 +110,11 @@ def createTree(dataSet, labels):
 
 #main function
 myData, labels = createDataSet()
-print myData
+print "> myData:\n", myData
 a = calcShannonEnt(myData)
-print a
+print "> calculate base Shannon Entroy:\n", a
 b = chooseBestFeatureToSplit(myData)
-print b
+print "> choose the best feature to split:\n", b
 
 mytree = createTree(myData, labels)
-print mytree
+print "> mytree here:\n", mytree
