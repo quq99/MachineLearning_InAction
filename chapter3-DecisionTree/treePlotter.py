@@ -36,7 +36,7 @@ def getTreeDepth(myTree):
 	return maxDepth
 
 
-
+'''
 #an example
 def createPlot():
 	fig = plt.figure(1, facecolor='white')
@@ -46,4 +46,19 @@ def createPlot():
 	plotNode(U'leaf node', (0.8, 0.1), (0.3, 0.8), leafNode)
 
 	plt.show()
+'''
+
+def retrieveTree(i):
+	listOfTrees = [{'no surfacing': {0:'no',1:{'flippers':\
+			{0:'no', 1:'yes'}}}},
+			{'no surfacing':{0:'no',1:{'flippers':\
+			{0:{'head':{0:'no',1:'yes'}},1:'no'}}}}
+			]
+	return listOfTrees[i]
+
+a=retrieveTree(1)
+print a
+b=retrieveTree(0)
+print getNumLeafs(b)
+print getTreeDepth(b)
 
