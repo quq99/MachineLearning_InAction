@@ -96,21 +96,38 @@ def createTree(dataSet, labels):
 	bestFeatLabel = labels[bestFeat]#see createDataSet function
 	myTree = {bestFeatLabel: {}}
 
-	del(labels[bestFeat])
+	subLabels = labels[:]
+	del(subLabels[bestFeat])
 
 	featValues = [example[bestFeat] for example in dataSet]
 	uniqueVals = set(featValues)
 
 	for value in uniqueVals:
-		subLabels = labels[:]
+	#	subLabels = labels[:]
 		myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet,\
 			bestFeat, value), subLabels)
 
 	return myTree
+#classify. give input, output the result
+def classify(inputTree, featLabels, testVec):
+	firstStr = inputTree.keys()[0]
+#	print firstStr
+#	print featLabels
+	secondDict = inputTree[firstStr]
+	featIndex = featLabels.index(firstStr)
 
+	for key in secondDict.keys():
+		if testVec[featIndex] == key:
+			if type(secondDict[key]).__name__ == 'dict':
+				classLabel = classify(secondDict[key],featLabels,testVec )
+			else:
+				classLabel = secondDict[key]
+
+	return classLabel
 #main function
 myData, labels = createDataSet()
 print "> myData:\n", myData
+print "> labels:\n", labels
 a = calcShannonEnt(myData)
 print "> calculate base Shannon Entroy:\n", a
 b = chooseBestFeatureToSplit(myData)
@@ -118,3 +135,9 @@ print "> choose the best feature to split:\n", b
 
 mytree = createTree(myData, labels)
 print "> mytree here:\n", mytree
+print ">labels here: ",labels
+print "Input labels=['no surfacing','flippers'], test Vector=[1,0]"
+print classify(mytree,labels,[1,0])
+
+print "Input labels=['no surfacing','flippers'], test Vector=[1,1]"
+print classify(mytree,labels,[1,1])
