@@ -6,6 +6,21 @@ def createDataSet():
 	labels = ['A','A','B','B']
 	return group,labels
 
+def file2matrix(filename):
+	featureNum = 3
+	fr = open(filename)
+	arrayOLines = fr.readlines()
+	numberOfLines = len(arrayOLines)
+	returnMat = np.zeros((numberOfLines,featureNum))
+	classLabelVector = []
+	index = 0
+	for line in arrayOLines:
+		listFromLine = line.strip().split('\t')
+		returnMat[index,:] = listFromLine[0:featureNum]
+		classLabelVector.append(int(listFromLine[-1]))
+		index += 1
+	return returnMat, classLabelVector
+
 def classify0(inX, dataSet, labels, k):
 	#how many examples
 	dataSetSize = dataSet.shape[0]
