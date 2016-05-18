@@ -1,13 +1,13 @@
 import numpy as np
 import operator
-
+'''
 def createDataSet():
 	group = np.array([[1.0,1.1], [1.0, 1.0], [0,0], [0, 0.1]])
 	labels = ['A','A','B','B']
 	return group,labels
-
+'''
 def file2matrix(filename):
-	featureNum = 3
+	featureNum = 3#it is the feature numbers, we set it as 3.
 	fr = open(filename)
 	arrayOLines = fr.readlines()
 	numberOfLines = len(arrayOLines)
@@ -52,9 +52,28 @@ def classify0(inX, dataSet, labels, k):
 	
 	return sortedClassCount[0][0]
 
+def datingClassTest(hoRatio,k):
+	#hoRatio = 0.10
+	#k=3
+	datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')
+	normMat, ranges, minVals = autoNorm(datingDataMat)
+	m = normMat.shape[0]
+	#number of test set
+	numTestVecs = int(m*hoRatio)
+
+	errorCount = 0.0
+	for i in range(numTestVecs):
+		classifierResult = classify0(normMat[i,:], normMat[\
+				numTestVecs:m,:], datingLabels[numTestVecs:m],k)
+		print "the classifier came back with: %d, the real number is:	%d" % (classifierResult, datingLabels[i])
+		if (classifierResult != datingLabels[i]):
+			errorCount += 1.0
+	
+	print "the total error rate is: %f" % (errorCount/float(numTestVecs))
+
 
 #main
-
+'''
 group, labels=createDataSet()
 print ">group:\n",group
 
@@ -63,3 +82,5 @@ print ">labels:\n",labels
 print ">input label:\n[0, 0]" 
 a = classify0([0,0], group, labels, 3)
 print ">label:\n", a
+'''
+datingClassTest(0.1,3)
