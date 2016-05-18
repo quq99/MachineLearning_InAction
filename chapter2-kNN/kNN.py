@@ -21,6 +21,16 @@ def file2matrix(filename):
 		index += 1
 	return returnMat, classLabelVector
 
+def autoNorm(dataSet):
+	minVals = dataSet.min(0)
+	maxVals = dataSet.max(0)
+	ranges = maxVals - minVals
+	normDataSet = np.zeros(np.shape(dataSet))
+	m = dataSet.shape[0]
+	normDataSet = ( dataSet - np.tile(minVals, (m,1)) )/np.tile(ranges, (m,1))
+	return normDataSet, ranges, minVals
+	
+
 def classify0(inX, dataSet, labels, k):
 	#how many examples
 	dataSetSize = dataSet.shape[0]
