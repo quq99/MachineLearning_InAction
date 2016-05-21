@@ -1,3 +1,4 @@
+from os import listdir
 import numpy as np
 import operator
 '''
@@ -19,7 +20,6 @@ def file2matrix(filename):
 		classLabelVector.append(int(listFromLine[-1]))
 		index += 1
 	return returnMat, classLabelVector
-
 '''
 def img2vector(filename):
 	returnVect = np.zeros((1,1024))
@@ -97,6 +97,37 @@ def classifyPerson():
 				datingLabels, 3)
 	print "You will probably like this person: ", resultList[classifierResult - 1]
 '''
+def handwritingClassTest(k):
+	
+	hwLabels = []
+	#list the filenames in the directory
+	trainingFileList = listdir('trainingDigits')
+	m = len(trainingFileList)
+	trainingMat = np.zeros((m,1024))
+	for i in range(m):
+		fileNameStr = trainingFileList[i]
+		fileStr = fileNameStr.split('.')[0]
+		classNumStr = int(fileStr.split('_')[0])
+		hwLabels.append(classNumStr)
+		trainingMat[i,:] = img2vector('trainingDigits/%s' % fileNameStr)
+
+	testFileList = listdir('testDigits')
+	errorCount = 0.0
+	mTest = len(testFileList)
+	for i in range(mTest):
+		fileNameStr = testFileList[i]
+		fileStr = fileNameStr.split('.')[0]
+		classNumStr = int(fileStr.split('_')[0])
+		vectorUnderTest = img2vector('testDigits/%s' % fileNameStr)
+		classifierResult = classify0(vectorUnderTest,\
+				trainingMat, hwLabels, k)
+		print "the classifier came back with: %d, the real answer is: %d" % (classifierResult, classNumStr)
+		if (classifierResult != classNumStr):
+			errorCount += 1.0
+
+	print "\nthe total number of errors is: %d" % errorCount
+	print "\nthe total error rate is: %f" % (errorCount/float(mTest))
+
 
 #main
 '''
@@ -110,5 +141,5 @@ a = classify0([0,0], group, labels, 3)
 print ">label:\n", a
 datingClassTest(0.1,3)
 classifyPerson()
-
 '''
+handwritingClassTest(3)
